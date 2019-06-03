@@ -27,7 +27,7 @@ namespace PharmaChain
         }
 
         public bool CanExecute(object parameter)
-        {
+        {   
             return this.canExecute == null || this.canExecute(parameter);
         }
 

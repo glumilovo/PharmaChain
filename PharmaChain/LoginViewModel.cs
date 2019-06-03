@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace PharmaChain
 {
@@ -72,10 +73,12 @@ namespace PharmaChain
         private ICommand _logoutCommand;
         public ICommand LogOutCommand => _logoutCommand ?? (_logoutCommand = new RelayCommand(dummy => LogOut()));
 
-
+        [DataContract]
         class TokenResponse
-        {
+        {   
+            [DataMember]
             public bool Success;
+            [DataMember]
             public string AccessToken;
         }
 
@@ -89,6 +92,7 @@ namespace PharmaChain
                 TokenResponse tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseBody);
                 if (tokenResponse.Success)
                 {
+                    _accessToken = tokenResponse.AccessToken;
                     IsLoggedIn = true;
                 }
                 else
