@@ -15,7 +15,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <local:RequestView Grid.Row="0" IsEnabled="{Binding LoginVM.IsLoggedIn}"/>
+        <local:RequestView Grid.Row="0" DataContext="{Binding RequestVM}" IsEnabled="{Binding DataContext.IsLoggedIn, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
         <local:LoginView Grid.Column="1" DataContext="{Binding LoginVM}"/>
     </Grid>
 </Window>

@@ -15,15 +15,29 @@ namespace PharmaChain
     {
         private string _login;
         private string _password;
+        private Session _session;
         private bool _isLoggedIn;
-        private HttpClient _client;
-        private string _accessToken;
 
-        public LoginViewModel()
+
+        public LoginViewModel(Session session)
         {
-            _client = new HttpClient();
-            TestConnection();
+            _session = session;
+            _session.LoggedIn += _session_LoggedIn;
+            _session.LoggedOut += _session_LoggedOut;
         }
+
+        // Событие сессии заставит представление обновиться
+        private void _session_LoggedIn(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsLoggedIn));
+        }
+
+        private void _session_LoggedOut(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsLoggedIn));
+        }
+
+        public bool IsLoggedIn => _session.IsLoggedIn;
 
         public string Login
         {
@@ -53,19 +67,6 @@ namespace PharmaChain
 
         }
 
-        public bool IsLoggedIn
-        {
-            get { return _isLoggedIn; }
-            set
-            {
-                if (_isLoggedIn != value)
-                {
-                    _isLoggedIn = value;
-                    OnPropertyChanged(nameof(IsLoggedIn));
-                }
-            }
-        }
-
         private ICommand _loginCommand;
         public ICommand LogInCommand => _loginCommand ?? (_loginCommand = new RelayCommand(dummy => LogIn()));
 
@@ -73,64 +74,16 @@ namespace PharmaChain
         private ICommand _logoutCommand;
         public ICommand LogOutCommand => _logoutCommand ?? (_logoutCommand = new RelayCommand(dummy => LogOut()));
 
-        [DataContract]
-        class TokenResponse
-        {   
-            [DataMember]
-            public bool Success;
-            [DataMember]
-            public string AccessToken;
-        }
+        
 
         private async void LogIn()
         {
-            try
-            {
-                HttpResponseMessage response = await _client.GetAsync($"http://localhost:8888/login?login={Login}&password={Password}");
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                TokenResponse tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseBody);
-                if (tokenResponse.Success)
-                {
-                    _accessToken = tokenResponse.AccessToken;
-                    IsLoggedIn = true;
-                }
-                else
-                {
-                    MessageBox.Show("Неправильный логин или пароль!", "PharmaChain", MessageBoxButton.OK);
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "PharmaChain", MessageBoxButton.OK);
-            }
+            _session.Login(Login, Password);
         }
 
         private async void LogOut()
         {
-            try
-            {
-                HttpResponseMessage response = await _client.GetAsync($"http://localhost:8888/logout?access_token={_accessToken}");
-                response.EnsureSuccessStatusCode();
-                IsLoggedIn = false;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "PharmaChain", MessageBoxButton.OK);
-            }
-        }
-
-        private async void TestConnection()
-        {
-            try
-            {
-                HttpResponseMessage response = await _client.GetAsync("http://localhost:8888/test");
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException e)
-            {
-                MessageBox.Show(e.Message, "PharmaChain", MessageBoxButton.OK);
-            }
+            _session.Logout();
         }
     }
 }

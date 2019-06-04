@@ -73,6 +73,7 @@
       <DependentUpon>RequestView.xaml</DependentUpon>
     </Compile>
     <Compile Include="RequestViewModel.cs" />
+    <Compile Include="Session.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Page Include="LoginView.xaml">
       <SubType>Designer</SubType>

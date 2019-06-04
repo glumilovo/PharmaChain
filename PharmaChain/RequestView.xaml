@@ -42,9 +42,9 @@
             <TextBlock Text=" - " />
             <DatePicker Text="{Binding ToDate}" />
         </StackPanel>
-        
+
 
         <Button Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Width="150"
-                                        Command="{Binding RequestCommand}">Отправить заявку</Button>
+                                        Command="{Binding SendRequestCommand}">Отправить заявку</Button>
     </Grid>
 </UserControl>

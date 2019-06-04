@@ -11,14 +11,33 @@ namespace PharmaChain
     {
         private LoginViewModel _loginVM;
         private RequestViewModel _requestVM;
+        private Session _session;
 
         public MainViewModel()
         {
-            _loginVM = new LoginViewModel();
-            _requestVM = new RequestViewModel();
+            // Теперь красивше
+            _session = new Session("localhost", 8888);
+            _session.LoggedIn += _session_LoggedIn;
+            _session.LoggedOut += _session_LoggedOut;
+
+            _loginVM = new LoginViewModel(_session);
+            _requestVM = new RequestViewModel(_session);
+        }
+
+        private void _session_LoggedOut(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsLoggedIn));
+        }
+
+        private void _session_LoggedIn(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsLoggedIn));
         }
 
         public LoginViewModel LoginVM => _loginVM;
         public RequestViewModel RequestVM => _requestVM;
+
+        public Session Session => _session;
+        public bool IsLoggedIn => _session.IsLoggedIn;
     }
 }
