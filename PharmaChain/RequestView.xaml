@@ -38,7 +38,7 @@
 
         <TextBlock Grid.Row="5" Grid.Column="0" Text="Срок годности: " HorizontalAlignment="Right"/>
         <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
-            <DatePicker Text="{Binding FromDate}" />
+            <DatePicker  Text="{Binding FromDate}" />
             <TextBlock Text=" - " />
             <DatePicker Text="{Binding ToDate}" />
         </StackPanel>

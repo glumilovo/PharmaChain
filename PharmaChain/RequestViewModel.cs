@@ -15,6 +15,8 @@ namespace PharmaChain
         private Session _session;
         public RequestViewModel(Session session)
         {
+            FromDate = DateTime.Today;
+            ToDate = DateTime.Today;
             _session = session;
         }
 
@@ -23,7 +25,7 @@ namespace PharmaChain
         public string Company { get; set; }
         public string Seller { get; set; }
         public int Amount { get; set; }
-        public DateTime FromDate { get; set; }
+        public DateTime FromDate { get; set; } 
         public DateTime ToDate { get; set; }
 
         private ICommand _sendRequestCommand;
@@ -45,7 +47,7 @@ namespace PharmaChain
 
         private async void Generate()
         {
-            string uriData = $"%7Bname%22%3A%22{Name}%22%2C%22portion%22%3A%22{Portion}%22%2C%22company%22%3A%22{Company}%22%2C%22seller%22%3A%22{Seller}%22%2C%22from_date%22%3A%22{FromDate.ToString()}%22%2C%22to_date%22%3A%22{ToDate.ToString()}%22%7D";
+            string uriData = $"%7B%22name%22%3A%22{Name}%22%2C%22portion%22%3A%22{Portion}%22%2C%22company%22%3A%22{Company}%22%2C%22seller%22%3A%22{Seller}%22%2C%22from_date%22%3A%22{FromDate.ToString()}%22%2C%22to_date%22%3A%22{ToDate.ToString()}%22%7D";
             Dictionary<string, string> args = new Dictionary<string, string>();
             args.Add("access_token", _session.AccessToken);
             args.Add("data", uriData);

@@ -5,17 +5,70 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PharmaChain"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="600" Width="800" Background="#202020" Foreground="LightGray">
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
+    
     
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <local:RequestView Grid.Row="0" DataContext="{Binding RequestVM}" IsEnabled="{Binding DataContext.IsLoggedIn, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
-        <local:LoginView Grid.Column="1" DataContext="{Binding LoginVM}"/>
+        <ContentControl  Content="{Binding}">
+            <ContentControl.Resources>
+                <Storyboard x:Key="myAnimation1">
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:4"/>
+                  
+                </Storyboard>
+                <Storyboard x:Key="myAnimation2">
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:5"/>
+
+                </Storyboard>
+            </ContentControl.Resources>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="ContentTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <DockPanel LastChildFill ="True">
+                              
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" DockPanel.Dock="Top" HorizontalAlignment="Right">
+                                        
+                                        <TextBlock Text="Логин: " />
+                                        <TextBlock Text="{Binding LoginVM.Login}" />
+                                        <Button HorizontalAlignment="Right" Width="150"
+                                                Command="{Binding LoginVM.LogOutCommand}">Logout</Button>
+                                    </StackPanel>
+                                    <local:RequestView HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding RequestVM}" Visibility="{Binding DataContext.IsLoggedIn, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                                </DockPanel>
+                                
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="false">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <local:LoginView HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding Content.LoginVM, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard
+                            x:Name="beginAnimation"
+                            Storyboard="{StaticResource myAnimation1}" />
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard
+                             Storyboard="{StaticResource myAnimation1}" />
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
     </Grid>
 </Window>
